@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "name": "boot-and-verdict",
+  "note": "Template. Placeholder coordinates. Copy to verify/local/. Boots the build, watches the load and configuration verdicts, reports a crash symptom or a bad verdict.",
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on,nand-fixture=on",
+  "firmware": "<path to the firmware build under test>",
+  "qemu": "<path to build/qemu-system-aarch64>",
+  "load_addr": "0x40160000",
+  "steps": [
+    { "do": "wait_pc", "pc": "0x0", "timeout": 300, "note": "loading completed" },
+    { "do": "read_mem", "addr": "0x0", "size": 4, "as": "load_verdict", "note": "verdict word written by the loader path" },
+    { "do": "read_mem", "addr": "0x0", "size": 4, "as": "config_verdict", "note": "verdict word written by the configuration parse" },
+    { "do": "cont", "seconds": 30 },
+    { "do": "snapshot" }
+  ],
+  "poison": [],
+  "counts": {
+    "extent": 0,
+    "sources": [
+      { "id": "load_verdict", "read": "load_verdict" },
+      { "id": "config_verdict", "read": "config_verdict" }
+    ]
+  },
+  "rejections": [
+    { "id": "bad-config", "trace": "Z8_UNKNOWN", "note": "declare what this scenario expects to see rejected" }
+  ],
+  "accepts_unmodeled": [],
+  "crash": { "trace_markers": ["Z8_UNKNOWN"] }
+}

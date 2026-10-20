@@ -1,0 +1,3 @@
+NOTICE
+QEMU (c) 2003-2026 Fabrice Bellard and the QEMU Project developers, GPL-2.0-or-later (COPYING, COPYING.LIB); Z8 board model (c) 2026 RdWing and the NijiN authors, GPL-2.0-or-later; this tree is distributed under GPL-3.0 (LICENSE).
+This tree ships no camera firmware and no camera data; firmware images and inputs stay with the operator.

@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "title": "Z8 dynamic verification criteria",
+  "note": "A criterion that was not exercised reports NOT_EXERCISED. It never reports PASS.",
+  "criteria": [
+    {
+      "id": "V1",
+      "class": "multi-source-consistency",
+      "title": "every place that carries a count agrees with the extent it describes",
+      "rule": "count_sources_consistent",
+      "note": "Emu-side counterpart of the count-source gate: a build that raises one source and leaves the backing table alone walks one entry too far."
+    },
+    {
+      "id": "V2",
+      "class": "envelope-assertion",
+      "title": "no guest access to a poisoned or out-of-envelope region",
+      "rule": "no_poison_touch",
+      "note": "A one-entry overrun lands on padding and stays invisible unless a live or poisoned object sits there."
+    },
+    {
+      "id": "V3",
+      "class": "stub-behavior",
+      "title": "declared reject paths reject, and nothing unmodeled is accepted",
+      "rule": "fail_closed",
+      "note": "Silent all-pass and silent all-skip are both defects; the run must show the rejections it declares."
+    },
+    {
+      "id": "V4",
+      "class": "crash-symptom",
+      "title": "no crash, diagnostic dump or restart loop in the observed window",
+      "rule": "no_crash",
+      "note": "A crash in the changed run and not in its control condemns the variable; a crash in both condemns the scenario."
+    }
+  ]
+}
