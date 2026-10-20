@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "name": "p1-count-overrun",
+  "pit": "P1",
+  "note": "Template. Placeholder coordinates. Copy to verify/local/ and fill in the values your build needs. P1: the count one past the table it walks. The layout-UB form is the same walk with the landing slot poisoned (P1b).",
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on",
+  "firmware": "<path to the firmware build under test>",
+  "qemu": "<path to build/qemu-system-aarch64>",
+  "load_addr": "0x40160000",
+  "steps": [
+    { "do": "wait_pc", "pc": "0x0", "timeout": 300, "note": "the walk is reachable" },
+    { "do": "poison", "tag": "landing-slot", "note": "layout-UB form: the slot one entry past the table" },
+    { "do": "poison", "tag": "table-boundary", "note": "P4: the padding or first record after the table" },
+    { "do": "read_mem", "addr": "0x0", "size": 4, "as": "count_registration" },
+    { "do": "read_mem", "addr": "0x0", "size": 4, "as": "count_save_immediate" },
+    { "do": "read_mem", "addr": "0x0", "size": 4, "as": "count_walk" },
+    { "do": "read_mem", "addr": "0x0", "size": 4, "as": "count_table_extent" },
+    { "do": "invoke", "cpu": 0, "fn": "0x0", "x0": "0x0", "x1": "0x0", "note": "call the walk under test" },
+    { "do": "cont", "seconds": 10 },
+    { "do": "snapshot" }
+  ],
+  "poison": [
+    { "tag": "landing-slot", "addr": "0x0", "bytes": "0000000000000000", "role": "poison" },
+    { "tag": "table-boundary", "addr": "0x0", "bytes": "0000000000000000", "role": "boundary" }
+  ],
+  "counts": {
+    "extent": 0,
+    "sources": [
+      { "id": "registration", "read": "count_registration" },
+      { "id": "save_immediate", "read": "count_save_immediate" },
+      { "id": "walk", "read": "count_walk" },
+      { "id": "table_extent", "read": "count_table_extent" }
+    ]
+  },
+  "twins": { "pairs": [ { "id": "count-twin", "reads": ["count_registration", "count_save_immediate"] } ] },
+  "rejections": [ { "id": "unmodeled-output", "trace": "unmodeled output" } ],
+  "crash": { "trace_markers": ["Z8_UNKNOWN"] }
+}

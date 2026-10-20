@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on",
+  "firmware": "<path to the firmware build under test>",
+  "qemu": "<path to build/qemu-system-aarch64>",
+  "load_addr": "0x40160000",
+  "rejections": [
+    {
+      "id": "unmodeled-output",
+      "trace": "unmodeled output"
+    }
+  ],
+  "crash": {
+    "trace_markers": [
+      "Z8_UNKNOWN"
+    ]
+  },
+  "name": "p8-frame-tier",
+  "pit": "P8",
+  "note": "Template. Placeholder coordinates. P8: the frame count past the tier cap. Read the configured count and compare with the cap the build allows.",
+  "steps": [
+    {
+      "do": "wait_pc",
+      "pc": "0x0",
+      "timeout": 300
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "cfg_frames"
+    },
+    {
+      "do": "cont",
+      "seconds": 5
+    },
+    {
+      "do": "snapshot"
+    }
+  ],
+  "frame_tier": {
+    "frames_from": "cfg_frames",
+    "tier_cap": 0
+  }
+}

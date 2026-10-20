@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on",
+  "firmware": "<path to the firmware build under test>",
+  "qemu": "<path to build/qemu-system-aarch64>",
+  "load_addr": "0x40160000",
+  "rejections": [
+    {
+      "id": "unmodeled-output",
+      "trace": "unmodeled output"
+    }
+  ],
+  "crash": {
+    "trace_markers": [
+      "Z8_UNKNOWN"
+    ]
+  },
+  "name": "p4-ownerless-write",
+  "pit": "P4",
+  "note": "Template. Placeholder coordinates. P4: a write past the boundary of a table nobody owns. Guard the boundary slot and check it after the run.",
+  "steps": [
+    {
+      "do": "wait_pc",
+      "pc": "0x0",
+      "timeout": 300
+    },
+    {
+      "do": "poison",
+      "tag": "table-boundary"
+    },
+    {
+      "do": "cont",
+      "seconds": 20
+    },
+    {
+      "do": "snapshot"
+    }
+  ],
+  "poison": [
+    {
+      "tag": "table-boundary",
+      "addr": "0x0",
+      "bytes": "0000000000000000",
+      "role": "boundary"
+    }
+  ]
+}

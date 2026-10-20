@@ -29,6 +29,17 @@ class ScenarioError(RuntimeError):
     pass
 
 
+def _resolve(block, named):
+    """Fill `*_from` keys in a scenario block with the named reads of the run."""
+    out = {}
+    for key, value in block.items():
+        if key.endswith('_from'):
+            out[key[:-5]] = named.get(value)
+        else:
+            out[key] = value
+    return out
+
+
 def run(scenario_path, out_dir, *, firmware=None, qemu=None, overrides=()):
     spec = json.loads(Path(scenario_path).read_text())
     if spec.get('schema') != 1:
@@ -40,7 +51,9 @@ def run(scenario_path, out_dir, *, firmware=None, qemu=None, overrides=()):
     machine = spec['machine']
     if isinstance(machine, list):
         machine = ','.join(machine)
-    obs = dict(reads={}, named={}, count_sources={}, poison_touch=[],
+    obs = dict(reads={}, named={}, count_sources={}, poison_touch=[], poison_armed=[],
+               ownerless_writes=[], ownerless_armed=[], guard=None, twin_sources={},
+               ring=None, state_gate=[], frame_tier=None,
                rejections=[], accepts_unmodeled=[], crash=dict(seen=False, kind=None),
                trace=[], hits=[])
     poison = {p['tag']: p for p in spec.get('poison', [])}
@@ -71,7 +84,7 @@ def run(scenario_path, out_dir, *, firmware=None, qemu=None, overrides=()):
                 entry = poison[step['tag']]
                 addr, data = _int(entry['addr']), bytes.fromhex(entry['bytes'])
                 guest.write_bytes(addr, data)
-                written[step['tag']] = (addr, data)
+                written[step['tag']] = (addr, data, entry.get('role', 'poison'))
             elif do == 'invoke':
                 cpu = step.get('cpu', 0)
                 state = guest.regs(cpu)
@@ -102,14 +115,16 @@ def run(scenario_path, out_dir, *, firmware=None, qemu=None, overrides=()):
                 raise ScenarioError(f'unknown step: {do}')
             obs['trace'] += [line for line in guest.log().splitlines() if line.strip()]
 
-        for tag, (addr, data) in written.items():
+        for tag, (addr, data, role) in written.items():
             after = guest.read_bytes(addr, len(data))
+            entry = dict(tag=tag, addr=hex(addr), expected=data.hex(), found=after.hex())
             if after != data:
-                obs['poison_touch'].append(dict(tag=tag, addr=hex(addr),
-                                                expected=data.hex(), found=after.hex()))
+                obs['ownerless_writes' if role == 'boundary' else 'poison_touch'].append(entry)
+            obs['ownerless_armed' if role == 'boundary' else 'poison_armed'].append(tag)
         obs['trace'] += [line for line in guest.log().splitlines() if line.strip()]
         obs['elapsed_sec'] = round(time.monotonic() - started, 1)
 
+    named = obs['named']
     markers = spec.get('crash', {}).get('trace_markers', ['Z8_UNKNOWN'])
     for line in obs['trace']:
         for marker in markers:
@@ -122,11 +137,20 @@ def run(scenario_path, out_dir, *, firmware=None, qemu=None, overrides=()):
     obs['accepts_unmodeled'] = [dict(id=a['id'], detail=a.get('detail', ''))
                                 for a in spec.get('accepts_unmodeled', [])]
     counts = spec.get('counts', {})
-    extent = counts.get('extent')
-    if extent is not None:
-        obs['count_sources'] = {src['id']: obs['named'].get(src['read'])
+    if counts.get('extent') is not None:
+        obs['count_sources'] = {src['id']: named.get(src['read'])
                                 for src in counts.get('sources', [])}
-        obs['count_extent'] = extent
+        obs['count_extent'] = counts['extent']
+    for pair in (spec.get('twins') or {}).get('pairs', []):
+        obs['twin_sources'][pair['id']] = {r: named.get(r) for r in pair['reads']}
+    if spec.get('ring'):
+        obs['ring'] = _resolve(spec['ring'], named)
+    if spec.get('guard'):
+        obs['guard'] = _resolve(spec['guard'], named)
+    if spec.get('frame_tier'):
+        obs['frame_tier'] = _resolve(spec['frame_tier'], named)
+    for gate in spec.get('state_gate', []):
+        obs['state_gate'].append(_resolve(gate, named))
     run_doc = dict(schema=1, kind='z8verify-run', scenario=spec.get('name', Path(scenario_path).stem),
                    firmware=dict(path=str(fw), sha256=sha256(fw), bytes=fw.stat().st_size),
                    emulator=dict(path=str(qm), sha256=sha256(qm), argv=guest.argv),

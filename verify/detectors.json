@@ -1,0 +1,76 @@
+{
+  "schema": 2,
+  "title": "Z8 runtime detectors",
+  "note": "Detectors run on every firmware build. They judge the run as it happens and report the problem class with its evidence. A detector without its inputs reports NOT_EXERCISED and never PASS. Calibration runs under calibration/ exist to prove the detectors fire on a known-bad build and stay quiet on a clean one.",
+  "detectors": [
+    {
+      "id": "V1",
+      "pit": "P1",
+      "class": "multi-source-consistency",
+      "title": "every place that carries a count agrees with the extent it describes",
+      "rule": "count_sources_consistent"
+    },
+    {
+      "id": "V2",
+      "pit": "P1",
+      "class": "envelope-assertion",
+      "title": "no guest access to a poisoned or guarded region",
+      "rule": "no_poison_touch",
+      "note": "The layout-UB form: an overrun that lands on padding stays silent, an overrun that lands on a live object does not. Poison the landing and the difference becomes visible."
+    },
+    {
+      "id": "V3",
+      "pit": "P3",
+      "class": "stub-behavior",
+      "title": "the guard neither allows everything nor skips everything",
+      "rule": "guard_balanced",
+      "note": "All-allow and all-skip are both defects of a cross-region bound. A healthy guard lets the valid case through and stops the invalid one."
+    },
+    {
+      "id": "V4",
+      "pit": "P7",
+      "class": "crash-symptom",
+      "title": "no crash, diagnostic dump or restart loop in the observed window",
+      "rule": "no_crash"
+    },
+    {
+      "id": "V5",
+      "pit": "P2",
+      "class": "twin-consistency",
+      "title": "twin values that must match each other still match",
+      "rule": "twins_consistent",
+      "note": "One value carried by several sources. Raising one source and leaving the others is the drift."
+    },
+    {
+      "id": "V6",
+      "pit": "P4",
+      "class": "envelope-assertion",
+      "title": "no write past the boundary of a table that is not ours",
+      "rule": "no_ownerless_write",
+      "note": "An unattributed write to the padding or the first record after a table."
+    },
+    {
+      "id": "V7",
+      "pit": "P5",
+      "class": "envelope-assertion",
+      "title": "the ring stays inside its envelope and delivers frames",
+      "rule": "ring_within_envelope",
+      "note": "A configuration that requests more than the envelope holds degrades the whole ring to zero frames. Zero frames is a failure, not a quiet state."
+    },
+    {
+      "id": "V8",
+      "pit": "P6",
+      "class": "state-gate",
+      "title": "a state gate says what it decided and does not keep stale state",
+      "rule": "state_gate_explicit",
+      "note": "Sticky card state, dual configuration and fail-closed configuration: every case must end in an explicit verdict, and state that a reset should clear must clear."
+    },
+    {
+      "id": "V9",
+      "pit": "P8",
+      "class": "tier-bounds",
+      "title": "the frame count stays within the tier cap",
+      "rule": "frame_within_tier"
+    }
+  ]
+}

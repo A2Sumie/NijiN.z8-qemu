@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on",
+  "firmware": "<path to the firmware build under test>",
+  "qemu": "<path to build/qemu-system-aarch64>",
+  "load_addr": "0x40160000",
+  "rejections": [
+    {
+      "id": "unmodeled-output",
+      "trace": "unmodeled output"
+    }
+  ],
+  "crash": {
+    "trace_markers": [
+      "Z8_UNKNOWN"
+    ]
+  },
+  "name": "p2-twin-drift",
+  "pit": "P2",
+  "note": "Template. Placeholder coordinates. P2: one value carried by several sources; a build that raises one source and leaves the others is the drift. Read each source and let the judge compare.",
+  "steps": [
+    {
+      "do": "wait_pc",
+      "pc": "0x0",
+      "timeout": 300
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "source_a"
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "source_b"
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "source_c"
+    },
+    {
+      "do": "cont",
+      "seconds": 5
+    },
+    {
+      "do": "snapshot"
+    }
+  ],
+  "twins": {
+    "pairs": [
+      {
+        "id": "value-twin",
+        "reads": [
+          "source_a",
+          "source_b",
+          "source_c"
+        ]
+      }
+    ]
+  }
+}

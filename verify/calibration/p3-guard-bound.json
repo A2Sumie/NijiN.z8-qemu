@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on",
+  "firmware": "<path to the firmware build under test>",
+  "qemu": "<path to build/qemu-system-aarch64>",
+  "load_addr": "0x40160000",
+  "rejections": [
+    {
+      "id": "unmodeled-output",
+      "trace": "unmodeled output"
+    }
+  ],
+  "crash": {
+    "trace_markers": [
+      "Z8_UNKNOWN"
+    ]
+  },
+  "name": "p3-guard-bound",
+  "pit": "P3",
+  "note": "Template. Placeholder coordinates. P3: a cross-region bound makes the guard allow everything or skip everything. Feed one valid case and one invalid case and record both verdicts.",
+  "steps": [
+    {
+      "do": "wait_pc",
+      "pc": "0x0",
+      "timeout": 300,
+      "note": "valid case is offered"
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "valid_result"
+    },
+    {
+      "do": "wait_pc",
+      "pc": "0x0",
+      "timeout": 300,
+      "note": "invalid case is offered"
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "invalid_result"
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "gate_silent"
+    },
+    {
+      "do": "snapshot"
+    }
+  ],
+  "guard": {
+    "valid_allowed_from": "valid_result",
+    "invalid_rejected_from": "invalid_result",
+    "silent_from": "gate_silent"
+  }
+}

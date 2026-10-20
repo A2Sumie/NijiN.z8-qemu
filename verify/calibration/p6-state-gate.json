@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on",
+  "firmware": "<path to the firmware build under test>",
+  "qemu": "<path to build/qemu-system-aarch64>",
+  "load_addr": "0x40160000",
+  "rejections": [
+    {
+      "id": "unmodeled-output",
+      "trace": "unmodeled output"
+    }
+  ],
+  "crash": {
+    "trace_markers": [
+      "Z8_UNKNOWN"
+    ]
+  },
+  "name": "p6-state-gate",
+  "pit": "P6",
+  "note": "Template. Placeholder coordinates. P6: sticky card state, dual configuration, fail-closed configuration. Every case must end in an explicit verdict and state a reset should clear must clear.",
+  "steps": [
+    {
+      "do": "wait_pc",
+      "pc": "0x0",
+      "timeout": 300,
+      "note": "the card state is consumed"
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "verdict_first"
+    },
+    {
+      "do": "cont",
+      "seconds": 10
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "state_after_reset"
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "gate_silent"
+    },
+    {
+      "do": "snapshot"
+    }
+  ],
+  "state_gate": [
+    {
+      "id": "card-state",
+      "verdict_from": "verdict_first",
+      "expected_verdict": 0,
+      "expected_clear": true,
+      "cleared_from": "state_after_reset",
+      "silent_from": "gate_silent"
+    }
+  ]
+}

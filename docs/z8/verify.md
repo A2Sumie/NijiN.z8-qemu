@@ -1,4 +1,4 @@
-# Dynamic verification
+# Runtime verification
 
 Run one firmware build. Get a problem report.
 
@@ -8,10 +8,11 @@ python3 verify/z8verify.py judge  --run <run-dir>/run.json
 python3 verify/z8verify.py report --run <run-dir>/run.json
 ```
 
-`run` drives the emulator and records observations. `judge` applies the criteria
-set. `report` renders markdown. One build in, one report out.
+`run` drives the emulator and hands the observations to the detectors. The
+report is a problem report: which problem class, with what evidence. One build
+in, one problem report out.
 
-## What the layer measures
+## Detectors
 
 | Criterion | Class | Catches |
 |---|---|---|
@@ -20,10 +21,10 @@ set. `report` renders markdown. One build in, one report out.
 | V3 | stub behaviour | fail-open and fail-closed: a reject path that silently accepts, or a declared path never exercised |
 | V4 | crash symptom | diagnostic dumps and restart loops in the observed window |
 
-Verdicts per criterion: `PASS`, `FAIL`, `NOT_EXERCISED`.
-Verdict per build: `CLEAN`, `PROBLEM_FOUND`, `UNVERIFIED`.
-A criterion without its inputs is `NOT_EXERCISED`. It is never `PASS`.
-A build with an unexercised criterion is `UNVERIFIED`, never `CLEAN`.
+Status per detector: `PASS`, `FAIL`, `NOT_EXERCISED`. A detector without its
+inputs is `NOT_EXERCISED`, never `PASS`. Verdict per build: `CLEAN`,
+`PROBLEM_FOUND`, `UNVERIFIED`. A run declares which detectors it feeds; the
+verdict covers those and the report says so for the rest.
 
 ## Observation and intervention
 
@@ -41,12 +42,12 @@ qtest memory access, trace on the reject paths.
 | `cont` | let the guest run for a window |
 | `snapshot` | take the recorded state |
 
-## Scenarios
+## Calibration
 
 A scenario is JSON. It carries every address, byte string and expected value, so
-the layer itself holds no firmware coordinate. Templates: `verify/scenarios/`.
-Real scenarios with real coordinates belong in `verify/local/`, which is not
-distributed.
+the layer itself holds no firmware coordinate. Cases: `verify/calibration/`,
+one per problem class, each with a known-bad build and a clean one. Real cases
+with real coordinates belong in `verify/local/`, which is not distributed.
 
 Rules that keep a comparison valid:
 
@@ -68,7 +69,7 @@ python3 verify/z8verify.py adopt --observations <obs.json> --scenario <scenario.
 `accepts_unmodeled`, `crash`, `hits`, `reads`. The scenario supplies `count_extent`
 and the poison declarations.
 
-## Self-test
+## Detector calibration
 
 ```sh
 python3 verify/z8verify.py selftest

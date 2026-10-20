@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on",
+  "firmware": "<path to the firmware build under test>",
+  "qemu": "<path to build/qemu-system-aarch64>",
+  "load_addr": "0x40160000",
+  "rejections": [
+    {
+      "id": "unmodeled-output",
+      "trace": "unmodeled output"
+    }
+  ],
+  "crash": {
+    "trace_markers": [
+      "Z8_UNKNOWN"
+    ]
+  },
+  "name": "p7-boot-crash",
+  "pit": "P7",
+  "note": "Template. Placeholder coordinates. P7: the boot loop class. Let the boot path run and watch for a crash symptom. A crash in the changed run and not in its control condemns the variable.",
+  "steps": [
+    {
+      "do": "cont",
+      "seconds": 60
+    },
+    {
+      "do": "snapshot"
+    }
+  ]
+}

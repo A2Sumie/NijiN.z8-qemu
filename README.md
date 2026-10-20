@@ -40,12 +40,14 @@ Machine properties select the modeled devices and input fixtures. See
 
 ```sh
 python3 verify/z8verify.py run --scenario <scenario.json> --out <run-dir>
-python3 verify/z8verify.py judge --run <run-dir>/run.json
-python3 verify/z8verify.py report --run <run-dir>/run.json
 ```
 
-One firmware build in, one report out. The report states, per criterion, whether
-the build passed, failed, or was not exercised. See [verify/README.md](verify/README.md)
+One firmware build in, one problem report out. Runtime detectors judge the build
+as it runs and report the problem class with its evidence: count overrun, an
+overrun landing on a live object, a guard that allows or skips everything, crash
+or restart loop, twin value drift, write past a table boundary, memory envelope
+violation, silent state gate, frame count past the tier cap. A detector without
+its inputs reports not exercised. It never reports pass. See [verify/README.md](verify/README.md)
 and [docs/z8/verify.md](docs/z8/verify.md).
 
 ## Capability
@@ -62,7 +64,7 @@ and [docs/z8/verify.md](docs/z8/verify.md).
 | Service core | MCU peer transport, event model, timer and counter models |
 | Observation | gdbstub breakpoints and watches, QMP/HMP, qtest, trace on reject paths |
 | Intervention | memory read/write, register write, call injection, call skip, poison writes |
-| Verification | criteria set, judge, report |
+| Verification | runtime detectors, problem report |
 
 Boundaries: release-mode input simulation is partial, coprocessor microcode has
 no execution model, and the second-stage load chain has no image support. Unmodeled
@@ -121,11 +123,11 @@ macOS 17+ SDK 废弃 ParavirtualizedGraphics API，加 `-Dpvg=disabled`。
 
 ```sh
 python3 verify/z8verify.py run --scenario <scenario.json> --out <run-dir>
-python3 verify/z8verify.py judge --run <run-dir>/run.json
-python3 verify/z8verify.py report --run <run-dir>/run.json
 ```
 
-一个固件构建进去，一份报告出来。报告逐条判据写明：通过、未通过、未验证。
+一个固件构建进去，一份问题报告出来。运行期检测器随跑随判，报出问题类别与证据：
+计数越界、越界落点打在活对象上、guard 全放行或全跳过、开机崩与重启循环、孪生漂移、
+越界写表、内存包络越限、静默状态门、帧数超档位。检测器缺输入记"未验证"，绝不记通过。
 见 [verify/README.md](verify/README.md)、[docs/z8/verify.md](docs/z8/verify.md)。
 
 ## 能力

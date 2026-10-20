@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on",
+  "firmware": "<path to the firmware build under test>",
+  "qemu": "<path to build/qemu-system-aarch64>",
+  "load_addr": "0x40160000",
+  "rejections": [
+    {
+      "id": "unmodeled-output",
+      "trace": "unmodeled output"
+    }
+  ],
+  "crash": {
+    "trace_markers": [
+      "Z8_UNKNOWN"
+    ]
+  },
+  "name": "p5-ring-envelope",
+  "pit": "P5",
+  "note": "Template. Placeholder coordinates. P5: a configuration that requests more than the envelope holds. The whole ring drops to zero frames. Record the request, the envelope and the delivered frames.",
+  "steps": [
+    {
+      "do": "wait_pc",
+      "pc": "0x0",
+      "timeout": 300,
+      "note": "the ring is set up"
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "ring_requested"
+    },
+    {
+      "do": "read_mem",
+      "addr": "0x0",
+      "size": 4,
+      "as": "ring_delivered"
+    },
+    {
+      "do": "cont",
+      "seconds": 20
+    },
+    {
+      "do": "snapshot"
+    }
+  ],
+  "ring": {
+    "requested_bytes_from": "ring_requested",
+    "delivered_frames_from": "ring_delivered",
+    "envelope_bytes": 0
+  }
+}
