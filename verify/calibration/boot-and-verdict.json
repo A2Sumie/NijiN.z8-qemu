@@ -2,7 +2,7 @@
   "schema": 1,
   "name": "boot-and-verdict",
   "note": "Template. Placeholder coordinates. Copy to verify/local/. Boots the build, watches the load and configuration verdicts, reports a crash symptom or a bad verdict.",
-  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on,nand-fixture=on",
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,bus-window-fixture=on,serial-fixture=on,nand-fixture=on",
   "firmware": "<path to the firmware build under test>",
   "qemu": "<path to build/qemu-system-aarch64>",
   "load_addr": "0x40160000",

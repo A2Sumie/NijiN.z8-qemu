@@ -25,3 +25,4 @@ GTAGS
 /subprojects/dtc/
 /subprojects/keycodemapdb/
 /subprojects/packagecache/
+/debug/local/

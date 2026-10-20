@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "probes",
+  "type": "object",
+  "required": [
+    "schema",
+    "probes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "type": "integer"
+    },
+    "note": {
+      "type": "string"
+    },
+    "probes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "skipcall",
+              "invoke"
+            ]
+          },
+          "at": {
+            "type": "string",
+            "description": "observation point id that triggers the probe"
+          },
+          "fn": {
+            "type": "string",
+            "description": "invoke: routine address"
+          },
+          "w0": {
+            "type": "string",
+            "description": "skipcall: forced result"
+          },
+          "args": {
+            "type": "object",
+            "description": "invoke: register arguments"
+          },
+          "max_uses": {
+            "type": "integer",
+            "description": "probe storm limit: how often the probe may fire"
+          }
+        }
+      }
+    }
+  }
+}

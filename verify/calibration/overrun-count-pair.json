@@ -2,7 +2,7 @@
   "schema": 1,
   "name": "overrun-count-pair",
   "note": "Template. Every address below is a placeholder. Copy to verify/local/ and fill in the values your build needs. Coordinates of a real build are not distributed.",
-  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on,service-core-event-model=on",
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,bus-window-fixture=on,serial-fixture=on,service-core-event-model=on",
   "firmware": "<path to the firmware build under test>",
   "qemu": "<path to build/qemu-system-aarch64>",
   "load_addr": "0x40160000",

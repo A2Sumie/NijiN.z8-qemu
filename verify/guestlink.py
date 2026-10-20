@@ -76,7 +76,7 @@ class Guest:
                 raise ValueError('raw path cannot contain a comma')
             argv += ['-object', f'memory-backend-file,id=raw,share=on,mem-path={Path(raw).resolve()},size=1M']
         if load_addr is not None:
-            argv += ['-device', f'loader,file={self.firmware},addr={load_addr},force-raw=on,cpu-num=0']
+            argv += ['-kernel', str(self.firmware)]
         else:
             argv += ['-kernel', str(self.firmware)]
         argv += list(extra)

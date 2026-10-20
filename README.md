@@ -71,6 +71,20 @@ no execution model, and the second-stage load chain has no image support. Unmode
 access is reported as `Z8_UNKNOWN`, never silently accepted. Full list in
 [docs/z8/capabilities.md](docs/z8/capabilities.md).
 
+## Debug
+
+```sh
+python3 debug/z8debug.py attach --qemu build/qemu-system-aarch64 \
+    --firmware <your build> --out run-01 --observe debug/local/observe.json --seconds 60
+```
+
+Breakpoints and watchpoints with one-shot and hit throttling, instruction trace
+with filters, probes (skip a call, call a routine, storm limits), intervention
+(memory poke, poison slots, key-body injection, event feeding, module feeding),
+DMA ledger, t0 dump, screen capture. Hooks are the tables: schema and empty
+templates ship with the tree, values live in `debug/local/`. See
+[debug/README.md](debug/README.md) and [docs/z8/debug.md](docs/z8/debug.md).
+
 ## Layout
 
 ```
@@ -129,6 +143,18 @@ python3 verify/z8verify.py run --scenario <scenario.json> --out <run-dir>
 计数越界、越界落点打在活对象上、guard 全放行或全跳过、开机崩与重启循环、孪生漂移、
 越界写表、内存包络越限、静默状态门、帧数超档位。检测器缺输入记"未验证"，绝不记通过。
 见 [verify/README.md](verify/README.md)、[docs/z8/verify.md](docs/z8/verify.md)。
+
+## 调试
+
+```sh
+python3 debug/z8debug.py attach --qemu build/qemu-system-aarch64 \
+    --firmware <你的构建> --out run-01 --observe debug/local/observe.json --seconds 60
+```
+
+断点与观察点（一发即撤、命中泄压）、单指令 trace 与过滤、探针（skipcall/调用/风暴上限）、
+干预（内存 poke、毒化槽、键体注入、事件喂入、模块喂入）、DMA 台账、t0 转储、屏幕捕获。
+挂点=表：schema 与空模板随树分发，取值在 `debug/local/`。见 [debug/README.md](debug/README.md)、
+[docs/z8/debug.md](docs/z8/debug.md)。
 
 ## 能力
 

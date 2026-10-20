@@ -3,7 +3,7 @@
   "name": "p1-count-overrun",
   "pit": "P1",
   "note": "Template. Placeholder coordinates. Copy to verify/local/ and fill in the values your build needs. P1: the count one past the table it walks. The layout-UB form is the same walk with the landing slot poisoned (P1b).",
-  "machine": "nikon-z8-lab,bootstrap-fixtures=on,serial-fixture=on",
+  "machine": "nikon-z8-lab,bootstrap-fixtures=on,bus-window-fixture=on,serial-fixture=on",
   "firmware": "<path to the firmware build under test>",
   "qemu": "<path to build/qemu-system-aarch64>",
   "load_addr": "0x40160000",
