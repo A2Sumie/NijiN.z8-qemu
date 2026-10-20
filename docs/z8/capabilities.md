@@ -18,6 +18,7 @@ What the model does, and what it does not. State is per 2026-10.
 | PCIe | DBI and unrolled ATU adapter, link diagnostics, INTx model |
 | Observation | gdbstub points and watches, QMP/HMP, qtest, reject-path trace |
 | Intervention | memory and register write, call injection, call skip, poison writes |
+| QA | daily-use battery: power, shooting modes, shutter, live view, playback, recording, menus, cards, battery, USB, error recovery; one command, one report per item |
 | Verification | runtime detectors over the observation layer: count overrun, live-object landing, guard bound, crash/loop, twin drift, boundary write, envelope, silent state gate, frame tier; problem report per build |
 
 ## Boundaries

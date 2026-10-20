@@ -73,6 +73,16 @@ no execution model, and the second-stage load chain has no image support. Unmode
 access is reported as `Z8_UNKNOWN`, never silently accepted. Full list in
 [docs/z8/capabilities.md](docs/z8/capabilities.md).
 
+## QA
+
+```sh
+python3 verify/qa/z8qa.py run --observations <dir> --out qa-out --build <build>
+```
+
+The daily-use QA battery: power, shooting modes, shutter, live view, playback,
+recording, menus, cards, battery, USB, error recovery. One command, one
+PASS/FAIL report per item. See [verify/qa/README.md](verify/qa/README.md).
+
 ## Debug
 
 ```sh
@@ -146,6 +156,13 @@ python3 verify/z8verify.py run --scenario <scenario.json> --out <run-dir>
 计数越界、越界落点打在活对象上、guard 全放行或全跳过、开机崩与重启循环、孪生漂移、
 越界写表、内存包络越限、静默状态门、帧数超档位。检测器缺输入记"未验证"，绝不记通过。
 见 [verify/README.md](verify/README.md)、[docs/z8/verify.md](docs/z8/verify.md)。
+
+## QA
+
+日常常规使用面回归：开机/关机/休眠唤醒、拍照（P/A/S/M、单拍/连拍/自拍、半按全按）、
+实时取景/翻转屏、回放（放大/保护/删除/幻灯片/直方图）、录像、菜单与常用设置、
+换卡/双卡/卡满/格式化、电量、USB、常规报错恢复。一条命令出 PASS/FAIL 报告，
+触达不到的面记 NOT_EXERCISED 并写清替代手段。见 [verify/qa/README.md](verify/qa/README.md)。
 
 ## 调试
 
