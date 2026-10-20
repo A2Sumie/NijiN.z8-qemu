@@ -1,5 +1,7 @@
 # NijiN.z8-qemu
 
+<p align="center"><img src="assets/lockup/nijin-lockup-transparent.png" alt="NijiN" width="420"></p>
+
 QEMU 11.1.1 with a Z8 camera board model and a dynamic verification layer.
 
 Mission: give it a firmware build, run it, get a problem report. Emulator plus
@@ -97,6 +99,7 @@ docs/z8/                     model, verification and capability notes
 ## License
 
 GPL-3.0, see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+Brand assets in `assets/` are CC BY-SA 4.0, see [assets/ASSETS.md](assets/ASSETS.md).
 
 ---
 
@@ -164,3 +167,4 @@ python3 debug/z8debug.py attach --qemu build/qemu-system-aarch64 \
 ## 许可
 
 GPL-3.0，见 [LICENSE](LICENSE)、[NOTICE](NOTICE)。
+`assets/` 品牌素材为 CC BY-SA 4.0，见 [assets/ASSETS.md](assets/ASSETS.md)。
